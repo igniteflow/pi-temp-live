@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+  </head>
+  <body>
+    <p id="value"></p>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.on('temperature', function(msg){
+        document.getElementById("value").innerHTML = msg;
+        console.log(msg);
+      });
+    </script>
+  </body>
+</html>
