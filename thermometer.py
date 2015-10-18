@@ -4,6 +4,7 @@
 import RPi.GPIO as GPIO
 import time, math
 import redis
+import json
 
 from datetime import datetime
 
@@ -103,7 +104,7 @@ def update_redis():
         time.sleep(1)
         temp_c = temp_from_r(read_resistance())
         now = datetime.now().isoformat()
-        data = (temp_c, now)
-        r.set('temperature', data)
+        data = (now, temp_c)
+        r.set('temperature', json.dumps(data))
 
 update_redis()

@@ -4,14 +4,89 @@
     <title>Socket.IO chat</title>
   </head>
   <body>
-    <p id="value"></p>
+    <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script>
-      var socket = io();
-      socket.on('temperature', function(msg){
-        document.getElementById("value").innerHTML = msg;
-        console.log(msg);
+      $(function () {
+        $(document).ready(function () {
+            var socket = io();
+
+            Highcharts.setOptions({
+                global: {
+                    useUTC: false
+                }
+            });
+
+            $('#container').highcharts({
+                chart: {
+                    type: 'spline',
+                    animation: Highcharts.svg, // don't animate in old IE
+                    marginRight: 10,
+                    events: {
+                        load: function () {
+                            var series = this.series[0];
+                            socket.on('temperature', function(data){
+                              series.addPoint(data, true, true);
+                              console.log(data);
+                            });
+                        }
+                    }
+                },
+                title: {
+                    text: 'Live Temperature'
+                },
+                xAxis: {
+                    type: 'datetime',
+                    tickPixelInterval: 150
+                },
+                yAxis: {
+                    title: {
+                        text: 'temperature'
+                    },
+                    plotLines: [{
+                        value: 0,
+                        width: 1,
+                        color: '#808080'
+                    }]
+                },
+                tooltip: {
+                    formatter: function () {
+                        return '<b>' + this.series.name + '</b><br/>' +
+                            Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+                            Highcharts.numberFormat(this.y, 2);
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                exporting: {
+                    enabled: false
+                },
+                series: [{
+                    name: 'Random data',
+                    data: (function () {
+                          // generate an array of random data
+                          var data = [],
+                              time = (new Date()).getTime(),
+                              i;
+
+                          for (i = -19; i <= 0; i += 1) {
+                              data.push({
+                                  x: time + i * 1000,
+                                  y: Math.random() * (20 - 10) + 10
+                              });
+                          }
+                          console.log(data);
+                          return data;
+                      }())
+                }]
+            });
+        });
       });
+
     </script>
   </body>
 </html>
