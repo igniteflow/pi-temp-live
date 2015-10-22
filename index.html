@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Socket.IO chat</title>
+    <title>Office temp</title>
   </head>
   <body>
     <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
@@ -30,17 +30,16 @@
                             var series = this.series[0];
                             socket.on('temperature', function(data){
                               series.addPoint(data, true, true);
-                              console.log(data);
                             });
                         }
                     }
                 },
                 title: {
-                    text: 'Live Temperature'
+                    text: 'Temperature at Phil\'s desk'
                 },
                 xAxis: {
                     type: 'datetime',
-                    tickPixelInterval: 150
+                    tickPixelInterval: 150,
                 },
                 yAxis: {
                     title: {
@@ -50,7 +49,9 @@
                         value: 0,
                         width: 1,
                         color: '#808080'
-                    }]
+                    }],
+		    min: 10,
+		    max: 30
                 },
                 tooltip: {
                     formatter: function () {
@@ -66,7 +67,7 @@
                     enabled: false
                 },
                 series: [{
-                    name: 'Random data',
+                    name: 'Temperature',
                     data: (function () {
                           // generate an array of random data
                           var data = [],
@@ -79,7 +80,6 @@
                                   y: Math.random() * (20 - 10) + 10
                               });
                           }
-                          console.log(data);
                           return data;
                       }())
                 }]
